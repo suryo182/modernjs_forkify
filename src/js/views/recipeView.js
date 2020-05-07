@@ -1,15 +1,37 @@
-import { elements } from './base';
+import { elements } from "./base";
+import { Fraction } from "fractional";
 
 export const clearRecipe = () => {
-  elements.recipe.innerHTML = '';
-}
+  elements.recipe.innerHTML = "";
+};
 
-const createIngredient = ingredient => /*html*/`
+const formatCount = (count) => {
+  if (count) {
+    // Count  = 2.5 --> 2 1/2
+    // Count  = 0.5 --> 1/2
+    const [int, dec] = count
+      .toString()
+      .split(".")
+      .map((el) => parseInt(el, 10));
+
+    if (!dec) return count;
+    if (int === 0) {
+      const fr = new Fraction(count);
+      return `${fr.numerator}/${fr.denominator}`;
+    } else {
+      const fr = new Fraction(count - int);
+      return `${int} ${fr.numerator}/${fr.denominator}`;
+    }
+  }
+  return '?';
+};
+
+const createIngredient = (ingredient) => /*html*/ `
     <li class="recipe__item">
     <svg class="recipe__icon">
         <use href="img/icons.svg#icon-check"></use>
     </svg>
-    <div class="recipe__count">${ingredient.count}</div>
+    <div class="recipe__count">${formatCount(ingredient.count)}</div>
     <div class="recipe__ingredient">
         <span class="recipe__unit">${ingredient.unit}</span>
         ${ingredient.ingredient}
@@ -31,14 +53,18 @@ export const renderRecipe = (recipe) => {
       <svg class="recipe__info-icon">
           <use href="img/icons.svg#icon-stopwatch"></use>
       </svg>
-      <span class="recipe__info-data recipe__info-data--minutes">${recipe.time}</span>
+      <span class="recipe__info-data recipe__info-data--minutes">${
+        recipe.time
+      }</span>
       <span class="recipe__info-text"> minutes</span>
       </div>
       <div class="recipe__info">
       <svg class="recipe__info-icon">
           <use href="img/icons.svg#icon-man"></use>
       </svg>
-      <span class="recipe__info-data recipe__info-data--people">${recipe.servings}</span>
+      <span class="recipe__info-data recipe__info-data--people">${
+        recipe.servings
+      }</span>
       <span class="recipe__info-text"> servings</span>
 
       <div class="recipe__info-buttons">
@@ -64,7 +90,7 @@ export const renderRecipe = (recipe) => {
 
 <div class="recipe__ingredients">
   <ul class="recipe__ingredient-list">
-    ${recipe.ingredients.map(el => createIngredient(el)).join('')}
+    ${recipe.ingredients.map((el) => createIngredient(el)).join("")}
   </ul>
 
   <button class="btn-small recipe__btn">
@@ -79,7 +105,9 @@ export const renderRecipe = (recipe) => {
   <h2 class="heading-2">How to cook it</h2>
   <p class="recipe__directions-text">
       This recipe was carefully designed and tested by
-      <span class="recipe__by">${recipe.author}</span>. Please check out directions at their website.
+      <span class="recipe__by">${
+        recipe.author
+      }</span>. Please check out directions at their website.
   </p>
   <a class="btn-small recipe__btn" href="${recipe.url}" target="_blank">
       <span>Directions</span>
@@ -90,5 +118,5 @@ export const renderRecipe = (recipe) => {
   </a>
 </div>
   `;
-  elements.recipe.insertAdjacentHTML('afterbegin', markup);
+  elements.recipe.insertAdjacentHTML("afterbegin", markup);
 };
