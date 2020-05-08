@@ -9,4 +9,4 @@ This is a Recipe App using [Food2Fork](https://forkify-api.herokuapp.com/) API u
 * Install npm : `npm install`
 * run : `npm run start`
 
-# Forkify - Simple Recipe App
+
